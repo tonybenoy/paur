@@ -1,10 +1,11 @@
 # -*- coding: utf-8 -*-
 import json
-import urllib
+import urllib.parse
+import urllib.request
 import subprocess
 import os
 import re
-
+import argparse
 
 class backend:
     passwrd = ""
@@ -12,8 +13,8 @@ class backend:
 #AUR search function
     def aur_search(self, args):
         target_url = "http://aur.archlinux.org/rpc.php"
-        params = urllib.urlencode({'type': 'search', 'arg': args})
-        response = urllib.urlopen("%s?%s" % (target_url, params)).read()
+        params = urllib.parse.urlencode({'type': 'search', 'arg': args})
+        response = urllib.request.urlopen("%s?%s" % (target_url, params)).read()
         data = json.loads(response)
         aurpkglist = []
         if not isinstance(data['results'], list):
@@ -25,6 +26,7 @@ class backend:
             aurpkglist.append(l)
         return aurpkglist
 
+#Downdloads AUR package , Builds it and installs it 
     def makepkg(self, name):
         cmd = "git clone https://aur.archlinux.org/" + name + ".git"
         subprocess.call(str.split(str(cmd)))
@@ -68,16 +70,16 @@ class backend:
             if n % 2 != 0:
                 fin.append(pkglist[n])
             else:
-                t = re.split('/', pkglist[n])
+                t = re.split('/', pkglist[n].decode('utf-8'))
                 fin.append(t[0])
                 s = t[1].split()
                 fin.append(s[0])
                 fin.append(s[1])
             n = n + 1
         size = len(fin)
-        i = size / 4
+        i = int(size / 4)
         nn = 0
-        for k in xrange(0, i):
+        for k in range(0, i):
             l = [fin[nn], fin[nn + 1], fin[nn + 2], fin[nn + 3]]
             paclist.append(l)
             nn += 4
@@ -151,5 +153,46 @@ class backend:
 
 if __name__ == '__main__':
     tpc = backend()
-    k = tpc.installed_db()
-    print(k)
+    parser = argparse.ArgumentParser(description='AUR Helper for Arch Linux.')
+    parser.add_argument('-Ss', help='Search Official Repository')
+    parser.add_argument('-As', help='Search AUR')
+    parser.add_argument('-s', help='Search both AUR and Official Repository')
+    args = parser.parse_args()
+    if args.Ss:
+        k = tpc.pacsearch(args.Ss)
+        if len(k) == 0:
+            print("Package " + args.Ss + " not found in official repositories")
+        else:
+            count = 0
+            for item in k:
+                count += 1
+                print(str(count) + ")" + item[0] +"/ "+
+                    item[1] + " " + item[2] + "\n" + item[3].decode('utf-8'))
+    if args.As:
+        k = tpc.aur_search(args.s)
+        if len(k) == 0:
+            print("Package " + args.As + " not found in AUR")
+        else:
+            count = 0
+            for item in k:
+                count += 1
+                print(str(count) + ")" + "AUR " + "/ " +
+                    item[1] + " " + item[4] + "\n" + "    " + item[5])
+    if args.s:
+        k = tpc.pacsearch(args.s)
+        count = 0
+        if len(k) == 0:
+            print("Package " + args.ss + " not found in official repositories")
+        else:
+            for item in k:
+                count += 1
+                print(str(count) + ")" + item[0] + "/ " +
+                      item[1] + " " + item[2] + "\n" + item[3].decode('utf-8'))
+        k1 = tpc.aur_search(args.s)
+        if len(k1) == 0:
+            print("Package " + args.s + " not found in AUR")
+        else:
+            for item in k1:
+                count += 1
+                print(str(count) + ")" + "AUR " + "/ " +
+                      item[1] + " " + item[4] + "\n" + "    " + item[5])
