@@ -157,7 +157,17 @@ if __name__ == '__main__':
     parser.add_argument('-Ss', help='Search Official Repository')
     parser.add_argument('-As', help='Search AUR')
     parser.add_argument('-s', help='Search both AUR and Official Repository')
+    parser.add_argument('-R', help='Uninstall Package')
+    parser.add_argument('-S', help='Install Package')
+    parser.add_argument('-Syu', help='Update System')
+    parser.add_argument('-Sa', help='Update AUR')
+    parser.add_argument('-Sya', help='Update AUR and System')
+
     args = parser.parse_args()
+    if args.S:
+        tpc.pacinstall(args.S)
+    if args.R:
+        tpc. uninstall(args.R)
     if args.Ss:
         k = tpc.pacsearch(args.Ss)
         if len(k) == 0:
