@@ -6,7 +6,8 @@ import subprocess
 import os
 import re
 import argparse
-##
+import sqlite3
+
 class backend:
     passwrd = ""
 
@@ -44,15 +45,19 @@ class backend:
 
 #Installs the package from official repository
     def pacinstall(self, name):
-        cmd = " pacman -S " + name + " --noconfirm"
-        os.popen("sudo -S %s" % (cmd), 'w').write(self.passwrd + '\n')
-        os.popen("sudo -k")
+        namelist = ' '.join(name)
+        cmd = "sudo -i pacman -S " + namelist + " --noconfirm"
+        subprocess.call(cmd,shell=True)
 
 #Uninstalls the package from the system
     def uninstall(self, name):
-        cmd = " pacman -R " + name + " --noconfirm"
-        os.popen("sudo -S %s" % (cmd), 'w').write(self.passwrd + '\n')
-        os.popen("sudo -k")
+        namelist = ' '.join(name)
+        cmd = "sudo -i pacman -S " + namelist + " --noconfirm"
+        subprocess.call(cmd,shell=True)
+
+        cmd = "sudo pacman -R " + name + " --noconfirm"
+        subprocess.Popen(cmd.split(),
+                         stdout=subprocess.PIPE)
 
 #Searches for the package in Official Repository
     def pacsearch(self, name):
@@ -157,14 +162,15 @@ if __name__ == '__main__':
     parser.add_argument('-Ss', help='Search Official Repository')
     parser.add_argument('-As', help='Search AUR')
     parser.add_argument('-s', help='Search both AUR and Official Repository')
-    parser.add_argument('-R', help='Uninstall Package')
-    parser.add_argument('-S', help='Install Package')
+    parser.add_argument('-R', help='Uninstall Package',nargs='+')
+    parser.add_argument('-S', help='Install Package',nargs='+')
     parser.add_argument('-Syu', help='Update System')
     parser.add_argument('-Sa', help='Update AUR')
     parser.add_argument('-Sya', help='Update AUR and System')
 
     args = parser.parse_args()
     if args.S:
+        print(args.S)
         tpc.pacinstall(args.S)
     if args.R:
         tpc. uninstall(args.R)
