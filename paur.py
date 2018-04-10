@@ -1,4 +1,13 @@
+#!/usr/bin/env python
 # -*- coding: utf-8 -*-
+
+__author__ = "Tony Benoy"
+__license__ = "BSD 3"
+__version__ = "0.0.1"
+__email__ = "tonybenoy@gmail.com"
+__status__ = "Beta"
+
+
 import json
 import urllib.parse
 import urllib.request
@@ -8,10 +17,10 @@ import re
 import argparse
 import sqlite3
 
-class backend:
+class paur:
     passwrd = ""
 
-#AUR search function
+    #AUR search function
     def aur_search(self, args):
         target_url = "http://aur.archlinux.org/rpc.php"
         params = urllib.parse.urlencode({'type': 'search', 'arg': args})
@@ -27,7 +36,7 @@ class backend:
             aurpkglist.append(l)
         return aurpkglist
 
-#Downdloads AUR package , Builds it and installs it 
+    #Downdloads AUR package , Builds it and installs it 
     def makepkg(self, name):
         cmd = "git clone https://aur.archlinux.org/" + name + ".git"
         subprocess.call(str.split(str(cmd)))
@@ -43,13 +52,13 @@ class backend:
         os.popen("sudo -k")
         os.chdir("path")
 
-#Installs the package from official repository
+    #Installs the package from official repository
     def pacinstall(self, name):
         namelist = ' '.join(name)
         cmd = "sudo -i pacman -S " + namelist + " --noconfirm"
         subprocess.call(cmd,shell=True)
 
-#Uninstalls the package from the system
+    #Uninstalls the package from the system
     def uninstall(self, name):
         namelist = ' '.join(name)
         cmd = "sudo -i pacman -S " + namelist + " --noconfirm"
@@ -59,7 +68,7 @@ class backend:
         subprocess.Popen(cmd.split(),
                          stdout=subprocess.PIPE)
 
-#Searches for the package in Official Repository
+    #Searches for the package in Official Repository
     def pacsearch(self, name):
         paclist = []
         cmd = "pacman -Ss " + name
@@ -90,12 +99,12 @@ class backend:
             nn += 4
         return paclist
 
-#Updates the system by running Pacman
+    #Updates the system by running Pacman
     def pac_update(self):
         os.popen("sudo -S %s" % ("pacman -Syyu --noconfirm "),
                  'w').write(self.passwrd + '\n')
 
-#Creates a database of all installed applications 
+    #Creates a database of all installed applications 
     def installed_db(self):
         cmd = "pacman -Q"
         data = subprocess.check_output(str.split(str(cmd)))
@@ -116,7 +125,7 @@ class backend:
             n = n + 1
         return installedlist
 
-#Performs and AUR Update
+    #Performs and AUR Update
     def aur_update(self):
         conn = sqlite3.connect('installed_db.db')
         c = conn.cursor()
@@ -157,7 +166,7 @@ class backend:
 
 
 if __name__ == '__main__':
-    tpc = backend()
+    vals = paur()
     parser = argparse.ArgumentParser(description='AUR Helper for Arch Linux.')
     parser.add_argument('-Ss', help='Search Official Repository')
     parser.add_argument('-As', help='Search AUR')
@@ -167,15 +176,17 @@ if __name__ == '__main__':
     parser.add_argument('-Syu', help='Update System')
     parser.add_argument('-Sa', help='Update AUR')
     parser.add_argument('-Sya', help='Update AUR and System')
-
     args = parser.parse_args()
+    
     if args.S:
         print(args.S)
-        tpc.pacinstall(args.S)
+        vals.pacinstall(args.S)
+    
     if args.R:
-        tpc. uninstall(args.R)
+        vals. uninstall(args.R)
+    
     if args.Ss:
-        k = tpc.pacsearch(args.Ss)
+        k = vals.pacsearch(args.Ss)
         if len(k) == 0:
             print("Package " + args.Ss + " not found in official repositories")
         else:
@@ -184,8 +195,9 @@ if __name__ == '__main__':
                 count += 1
                 print(str(count) + ")" + item[0] +"/ "+
                     item[1] + " " + item[2] + "\n" + item[3].decode('utf-8'))
+    
     if args.As:
-        k = tpc.aur_search(args.s)
+        k = vals.aur_search(args.As)
         if len(k) == 0:
             print("Package " + args.As + " not found in AUR")
         else:
@@ -194,8 +206,9 @@ if __name__ == '__main__':
                 count += 1
                 print(str(count) + ")" + "AUR " + "/ " +
                     item[1] + " " + item[4] + "\n" + "    " + item[5])
+    
     if args.s:
-        k = tpc.pacsearch(args.s)
+        k = vals.pacsearch(args.s)
         count = 0
         if len(k) == 0:
             print("Package " + args.ss + " not found in official repositories")
@@ -204,7 +217,7 @@ if __name__ == '__main__':
                 count += 1
                 print(str(count) + ")" + item[0] + "/ " +
                       item[1] + " " + item[2] + "\n" + item[3].decode('utf-8'))
-        k1 = tpc.aur_search(args.s)
+        k1 = vals.aur_search(args.s)
         if len(k1) == 0:
             print("Package " + args.s + " not found in AUR")
         else:
