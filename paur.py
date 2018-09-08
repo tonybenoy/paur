@@ -26,6 +26,10 @@ class paur:
         params = urllib.parse.urlencode({'type': 'search', 'arg': args})
         response = urllib.request.urlopen("%s?%s" % (target_url, params)).read()
         data = json.loads(response)
+        print (type(data))
+        return data
+        """
+        print(data)
         aurpkglist = []
         if not isinstance(data['results'], list):
             data['results'] = [data['results'], ]
@@ -34,7 +38,9 @@ class paur:
             for name in pkg:
                 l.append(pkg[name])
             aurpkglist.append(l)
+        print (aurpkglist[1])
         return aurpkglist
+        """
 
     #Downdloads AUR package , Builds it and installs it 
     def makepkg(self, name):
@@ -61,9 +67,8 @@ class paur:
     #Uninstalls the package from the system
     def uninstall(self, name):
         namelist = ' '.join(name)
-        cmd = "sudo -i pacman -S " + namelist + " --noconfirm"
+        #cmd = "sudo -i pacman -S " + namelist + " --noconfirm"
         subprocess.call(cmd,shell=True)
-
         cmd = "sudo pacman -R " + name + " --noconfirm"
         subprocess.Popen(cmd.split(),
                          stdout=subprocess.PIPE)
@@ -114,19 +119,23 @@ class paur:
         aurlist = data.splitlines()
         n = 0
         installedlist = []
-        size = len(pkglist)
-        while n != size:
-            l = pkglist[n].split()
-            if l[0] in aurlist:
-                l.append("Yes")
+        while n != len(pkglist):
+            data={}
+            data["name"]=str(pkglist[n].split()[0])
+            data["version"]=str(pkglist[n].split()[1])
+            if pkglist[n].split()[0] in aurlist:
+                data["aur"]=1
             else:
-                l.append("NO")
-            installedlist.append(l)
+                data["aur"]=0
+            installedlist.append(data)
             n = n + 1
-        return installedlist
+        installed={}
+        installed["result"]=installedlist
+        return json.dumps(data)
 
-    #Performs and AUR Update
+    #Performs AUR Update
     def aur_update(self):
+        
         conn = sqlite3.connect('installed_db.db')
         c = conn.cursor()
         c.execute(
@@ -167,6 +176,9 @@ class paur:
 
 if __name__ == '__main__':
     vals = paur()
+    a=vals.installed_db()
+    vals.aur_update(a)
+    
     parser = argparse.ArgumentParser(description='AUR Helper for Arch Linux.')
     parser.add_argument('-Ss', help='Search Official Repository')
     parser.add_argument('-As', help='Search AUR')
@@ -225,3 +237,4 @@ if __name__ == '__main__':
                 count += 1
                 print(str(count) + ")" + "AUR " + "/ " +
                       item[1] + " " + item[4] + "\n" + "    " + item[5])
+    
