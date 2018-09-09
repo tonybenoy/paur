@@ -28,19 +28,6 @@ class paur:
         data = json.loads(response)
         print (type(data))
         return data
-        """
-        print(data)
-        aurpkglist = []
-        if not isinstance(data['results'], list):
-            data['results'] = [data['results'], ]
-        for pkg in data['results']:
-            l = []
-            for name in pkg:
-                l.append(pkg[name])
-            aurpkglist.append(l)
-        print (aurpkglist[1])
-        return aurpkglist
-        """
 
     #Downdloads AUR package , Builds it and installs it 
     def makepkg(self, name):
@@ -68,8 +55,8 @@ class paur:
     def uninstall(self, name):
         namelist = ' '.join(name)
         #cmd = "sudo -i pacman -S " + namelist + " --noconfirm"
-        subprocess.call(cmd,shell=True)
-        cmd = "sudo pacman -R " + name + " --noconfirm"
+        #subprocess.call(cmd,shell=True)
+        cmd = "sudo pacman -Rns " + name + " --noconfirm"
         subprocess.Popen(cmd.split(),
                          stdout=subprocess.PIPE)
 
@@ -109,14 +96,18 @@ class paur:
         os.popen("sudo -S %s" % ("pacman -Syyu --noconfirm "),
                  'w').write(self.passwrd + '\n')
 
+#Needs to split the function into 2 so that I can get a seperate list of AUR packages and Official repo Packages
+    """
     #Creates a database of all installed applications 
     def installed_db(self):
         cmd = "pacman -Q"
         data = subprocess.check_output(str.split(str(cmd)))
         pkglist = data.splitlines()
+        print(pkglist, type(pkglist))
         cmd = "pacman -Qqm"
         data = subprocess.check_output(str.split(str(cmd)))
         aurlist = data.splitlines()
+        print(aurlist,type(aurlist))
         n = 0
         installedlist = []
         while n != len(pkglist):
@@ -129,25 +120,47 @@ class paur:
                 data["aur"]=0
             installedlist.append(data)
             n = n + 1
-        installed={}
+        installed = {}
         installed["result"]=installedlist
         return json.dumps(data)
+    """
+    def aur_installed_list(self):
+        pkglist = self.repo_installed_list()
+        cmd = "pacman -Qqm"
+        data = subprocess.check_output(str.split(str(cmd)))
+        aurlist = data.splitlines()
+        print(aurlist)
+        installedlist=[]
+        n=0
+        while n != len(pkglist):
+            data = {}
+            #print(pkglist[n]["name"])
+            if pkglist[n]["name"] in aurlist:
+                data["name"] = pkglist[n]["name"]
+                data["version"] = pkglist[n]["version"]
+                installedlist.append(data)
+            n = n + 1
+        print(installedlist)
+        
+    def repo_installed_list(self):
+        cmd = "pacman -Q"
+        data = subprocess.check_output(str.split(str(cmd)))
+        pkglist = data.splitlines()
+        n = 0
+        installedlist = []
+        while n != len(pkglist):
+            data = {}
+            data["name"] = str(pkglist[n].split()[0])
+            data["version"] = str(pkglist[n].split()[1])
+            installedlist.append(data)
+            n = n + 1
+        return installedlist
+
 
     #Performs AUR Update
-    def aur_update(self):
+    def aur_update(self,a):
         
-        conn = sqlite3.connect('installed_db.db')
-        c = conn.cursor()
-        c.execute(
-            'CREATE TABLE IF NOT EXISTS installed(name TEXT, version TEXT, aur TEXT)')
-        c.execute('''SELECT name ,version from installed where aur="Yes"''')
-        data1 = c.fetchall()
         target_url = "http://aur.archlinux.org/rpc.php"
-        size = len(data1)
-        conn1 = sqlite3.connect('aurup.db')
-        c1 = conn1.cursor()
-        c1.execute(''' drop table if exists searchdata''')
-        c1.execute('''CREATE TABLE searchdata(FirstSubmitted text, Maintainer text, Description text,License text, URL text,LastModified text,PackageBaseID text,CategoryID text,Version text,URLPath text,OutOfDate text,NumVotes text,PackageBase text,ID text,Name text )''')
         for i in range(0, size):
             params = urllib.urlencode({'type': 'search', 'arg': data1[i][0]})
             response = urllib.urlopen("%s?%s" % (target_url, params)).read()
@@ -159,7 +172,6 @@ class paur:
                 for name in pkg:
                    l.append(pkg[name])
                 c1.execute('''INSERT INTO searchdata(FirstSubmitted , Maintainer , Description ,License , URL ,LastModified ,PackageBaseID ,CategoryID ,Version ,URLPath ,OutOfDate ,NumVotes ,PackageBase ,ID,Name ) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)''', l)
-
         c1.execute('''SELECT name,version from searchdata''')
         data2 = c1.fetchall()
         s = len(data2)
@@ -176,15 +188,17 @@ class paur:
 
 if __name__ == '__main__':
     vals = paur()
-    a=vals.installed_db()
-    vals.aur_update(a)
-    
+    a = vals.aur_installed_list()
+    print(a)
+    #vals.aur_update(a)
+
+"""
     parser = argparse.ArgumentParser(description='AUR Helper for Arch Linux.')
-    parser.add_argument('-Ss', help='Search Official Repository')
-    parser.add_argument('-As', help='Search AUR')
-    parser.add_argument('-s', help='Search both AUR and Official Repository')
-    parser.add_argument('-R', help='Uninstall Package',nargs='+')
-    parser.add_argument('-S', help='Install Package',nargs='+')
+    parser.add_argument('-Ss', help='Search Official Repository') #Done
+    parser.add_argument('-As', help='Search AUR') #Done
+    parser.add_argument('-s', help='Search both AUR and Official Repository') #Done
+    parser.add_argument('-R', help='Uninstall Package',nargs='+') #Done
+    parser.add_argument('-S', help='Install Package',nargs='+') #Done
     parser.add_argument('-Syu', help='Update System')
     parser.add_argument('-Sa', help='Update AUR')
     parser.add_argument('-Sya', help='Update AUR and System')
@@ -237,4 +251,4 @@ if __name__ == '__main__':
                 count += 1
                 print(str(count) + ")" + "AUR " + "/ " +
                       item[1] + " " + item[4] + "\n" + "    " + item[5])
-    
+"""
