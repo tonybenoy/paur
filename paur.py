@@ -32,6 +32,7 @@ class paur:
         print (type(data))
         return data
 
+    #fix dependency
     #Downdloads AUR package , Builds it and installs it 
     def makepkg(self, name):
         cmd = "git clone https://aur.archlinux.org/" + name + ".git"
