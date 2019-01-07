@@ -20,6 +20,9 @@ import sqlite3
 class paur:
     passwrd = ""
 
+    """
+    To be moved to Aur.py
+    """
     #AUR search function
     def aur_search(self, args):
         target_url = "http://aur.archlinux.org/rpc.php"
