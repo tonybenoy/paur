@@ -2,6 +2,9 @@ from typing import Dict
 
 import typer
 
+from aor.utils import find_in_aor
+from aur.utils import find_in_aur
+
 
 def main(packages: str):
     packages_list = packages.split()
@@ -12,18 +15,10 @@ def main(packages: str):
 
 
 def find_package(pkg_name: str) -> Dict:
-    pkg = find_pkg_in_aor(pkg_name=pkg_name)
+    pkg = find_in_aor(name=pkg_name)
     if not pkg:
-        pkg = find_pkg_in_aur(pkg_name=pkg_name)
+        pkg = find_in_aur(pkg=pkg_name)
     return pkg
-
-
-def find_pkg_in_aor(pkg_name: str) -> Dict:
-    return {}
-
-
-def find_pkg_in_aur(pkg_name: str) -> Dict:
-    return {}
 
 
 if __name__ == "__main__":
