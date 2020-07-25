@@ -23,5 +23,5 @@ setuptools.setup(
         "License :: OSI Approved :: GNU General Public License (GPL)",
         "Operating System :: OS Independent",
     ),
-    extras_require={"dev": ["black", "pylint", "mypy",]},
+    extras_require={"dev": ["black", "pylint", "isort", "mypy",]},
 )
