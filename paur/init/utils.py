@@ -19,9 +19,9 @@ def create_default_config(clean: bool = False) -> bool:
     config = configparser.ConfigParser()
     config["configs"] = {
         "path_to_db": f"{base_config_path}/paur.db",
-        "is_arch": check_if_arch_linux(),
-        "enable_logging": False,
-        "log_in_file": False,
+        "is_arch": str(check_if_arch_linux()),
+        "enable_logging": "False",
+        "log_in_file": "False",
         "path_to_log_file": f"{base_config_path}/log.txt",
     }
     with open(config_path, "w") as configfile:
