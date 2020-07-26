@@ -20,8 +20,9 @@ setuptools.setup(
     packages=setuptools.find_packages(),
     classifiers=(
         "Programming Language :: Python :: 3",
-        "License :: OSI Approved :: GNU General Public License (GPL)",
-        "Operating System :: OS Independent",
+        "License :: OSI Approved :: BSD License",
+        "Operating System :: POSIX :: Linux",
+        "Development Status :: 2 - Pre-Alpha",
     ),
     extras_require={"dev": ["black", "pylint", "isort", "mypy",]},
 )
