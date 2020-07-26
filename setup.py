@@ -15,7 +15,7 @@ setuptools.setup(
     long_description=long_description,
     long_description_content_type="text/markdown",
     url="https://github.com/tonybenoy/paur",
-    install_requires=["httpx", "typer", "shellingham"],
+    install_requires=["typer", "shellingham", "aurlib", "aorlib"],
     keywords="Arch Linux AUR Arch User Repository pacman",
     packages=setuptools.find_packages(),
     classifiers=(

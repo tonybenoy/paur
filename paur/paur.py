@@ -2,8 +2,8 @@ from typing import Dict
 
 import typer
 
-from aor.utils import find_in_aor
-from aur.utils import find_in_aur
+from aorlib.aorlib import find_in_aor
+from aurlib.aurlib import find_in_aur
 
 
 def main(packages: str):
