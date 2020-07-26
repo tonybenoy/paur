@@ -10,7 +10,7 @@ app = typer.Typer()
 
 
 @app.command()
-def main(packages: str):
+def main(packages: str)->None:
     packages_list = packages.split()
     for pkg in packages_list:
         package = find_package(pkg_name=pkg)
@@ -19,7 +19,7 @@ def main(packages: str):
 
 
 @app.command("init")
-def init(sub_command: Optional[str] = typer.Argument(None)):
+def init(sub_command: Optional[str] = typer.Argument(None))->None:
     clean = True if sub_command else False
     if create_default_config(clean=clean):
         typer.echo(f"Config successfully created!")
