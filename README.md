@@ -7,8 +7,8 @@
     </a>
 </p>
 <p>
-    <a href="https://github.com/tonybenoy/cocapi/actions">
-        <img src="https://github.com/tonybenoy/cocapi/workflows/mypy/badge.svg" alt="Test Status" height="20">
+    <a href="https://github.com/tonybenoy/paur/actions">
+        <img src="https://github.com/tonybenoy/paur/workflows/mypy/badge.svg" alt="Test Status" height="20">
     </a>
 </p>
 Arch User Repository Helper for Arch Linux based on Python</br>.Install packages from Arch User Repository and Offical Repositories. Search for packages in AUR and Official Repositories. Uninstall locally installed packages. 
