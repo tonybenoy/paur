@@ -10,6 +10,7 @@
     <a href="https://github.com/tonybenoy/paur/actions">
         <img src="https://github.com/tonybenoy/paur/workflows/mypy/badge.svg" alt="Test Status" height="20">
     </a>
+    ![CodeQL](https://github.com/tonybenoy/paur/workflows/CodeQL/badge.svg)
            <a href="https://pypi.org/project/paur/"><img src="https://img.shields.io/pypi/v/paur" alt="Pypi version" height="21"></a>
 
 </p>
