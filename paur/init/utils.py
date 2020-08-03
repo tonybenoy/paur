@@ -1,6 +1,6 @@
 import configparser
 from os import path, remove
-
+from pathlib import Path
 from utils.conf import check_if_arch_linux
 
 
