@@ -4,10 +4,10 @@ from find.utils import find_package
 
 from paur.paur import console
 
-app = typer.Typer()
+findcmd = typer.Typer()
 
 
-@app.command("find")
+@findcmd.command("find")
 def find(
     packages: str,
     in_aur: bool = typer.Option(False, help="Search only in AUR."),

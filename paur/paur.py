@@ -3,7 +3,7 @@ from typing import Optional
 import typer
 from rich.console import Console
 
-from find import find
+from find.find import findcmd
 from init.utils import create_default_config
 
 app = typer.Typer()
@@ -17,7 +17,7 @@ def init(sub_command: Optional[str] = typer.Argument(None)) -> None:
         console.print("Config", "successfully ", "created!", style="bold green")
 
 
-app.add_typer(find.app, name="find")
+app.add_typer(findcmd, name="find")
 
 
 if __name__ == "__main__":
