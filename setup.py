@@ -15,7 +15,7 @@ setuptools.setup(
     long_description=long_description,
     long_description_content_type="text/markdown",
     url="https://github.com/tonybenoy/paur",
-    install_requires=["typer", "shellingham", "aurlib", "aorlib", "aiosqlite"],
+    install_requires=["typer", "shellingham", "aurlib", "aorlib", "aiosqlite", "rich"],
     keywords="Arch Linux AUR Arch User Repository pacman",
     packages=setuptools.find_packages(),
     classifiers=(
